@@ -6,3 +6,4 @@ RUN adduser -u 1000 -D -S -G www-data www-data
 ADD nginx.conf /etc/nginx/nginx.conf
 ADD nginx.template /etc/nginx/nginx.template
 ADD nginx-onlyoffice.conf /etc/nginx/nginx-onlyoffice.conf
+ADD nginx-nextcloud.conf /etc/nginx/nginx-nextcloud.conf
