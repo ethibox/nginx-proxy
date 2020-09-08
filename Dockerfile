@@ -9,3 +9,5 @@ ADD nginx-nextcloud.conf /etc/nginx/nginx-nextcloud.conf
 ADD nginx-onlyoffice.conf /etc/nginx/nginx-onlyoffice.conf
 ADD nginx-collabora.conf /etc/nginx/nginx-collabora.conf
 ADD nginx-prestashop.conf /etc/nginx/nginx-prestashop.conf
+
+WORKDIR /var/www/html
