@@ -35,7 +35,7 @@ http {
     #gzip  on;
 
     upstream php-handler {
-        server app:9000;
+        server $SERVER_NAME:9000;
     }
 
     server {

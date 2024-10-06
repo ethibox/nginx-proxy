@@ -6,8 +6,10 @@ events {
 
 http {
     upstream backend {
-        server app:9000;
+        server $SERVER_NAME:9000;
     }
+
+    resolver 127.0.0.11 ipv6=off;
 
     include /etc/nginx/mime.types;
     default_type application/octet-stream;
@@ -48,6 +50,7 @@ http {
             fastcgi_param  SERVER_ADDR        $server_addr;
             fastcgi_param  SERVER_PORT        $server_port;
             fastcgi_param  SERVER_NAME        $server_name;
+            fastcgi_param  HTTPS              $HTTPS;
             fastcgi_intercept_errors on;
             fastcgi_pass backend;
         }
