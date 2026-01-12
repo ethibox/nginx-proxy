@@ -1,0 +1,84 @@
+user www-data;
+
+events {
+    worker_connections 768;
+}
+
+http {
+    resolver 127.0.0.11 ipv6=off;
+
+    include /etc/nginx/mime.types;
+    default_type application/octet-stream;
+    gzip on;
+    gzip_disable "msie6";
+    client_max_body_size 50M;
+
+    server {
+        listen 80;
+
+        client_max_body_size 100M;
+        charset utf-8;
+
+        location / {
+            proxy_pass http://${SERVER_NAME}_front/;
+            proxy_pass_header server;
+            proxy_set_header host $http_host;
+            proxy_redirect off;
+            proxy_set_header x-real-ip $remote_addr;
+            proxy_set_header x-scheme $scheme;
+        }
+
+        location /api/ {
+            proxy_pass http://${SERVER_NAME}_back:8000/api/;
+            proxy_pass_header server;
+            proxy_set_header host $http_host;
+            proxy_redirect off;
+            proxy_set_header x-real-ip $remote_addr;
+            proxy_set_header x-scheme $scheme;
+        }
+
+        location /admin/ {
+            proxy_pass http://${SERVER_NAME}_back:8000/admin/;
+            proxy_pass_header server;
+            proxy_set_header host $http_host;
+            proxy_redirect off;
+            proxy_set_header x-real-ip $remote_addr;
+            proxy_set_header x-scheme $scheme;
+        }
+
+        location /static/ {
+            alias /taiga/static/;
+        }
+
+        location /_protected/ {
+            internal;
+            alias /taiga/media/;
+            add_header content-disposition "attachment";
+        }
+
+        location /media/exports/ {
+            alias /taiga/media/exports/;
+            add_header content-disposition "attachment";
+        }
+
+        location /media/ {
+            proxy_set_header host $http_host;
+            proxy_set_header x-real-ip $remote_addr;
+            proxy_set_header x-scheme $scheme;
+            proxy_set_header x-forwarded-proto $scheme;
+            proxy_set_header x-forwarded-for $proxy_add_x_forwarded_for;
+            proxy_pass http://${SERVER_NAME}_protected:8003/;
+            proxy_redirect off;
+        }
+
+        location /events {
+            proxy_pass http://${SERVER_NAME}_events:8888/events;
+            proxy_http_version 1.1;
+            proxy_set_header upgrade $http_upgrade;
+            proxy_set_header connection "upgrade";
+            proxy_connect_timeout 7d;
+            proxy_send_timeout 7d;
+            proxy_read_timeout 7d;
+        }
+    }
+}
