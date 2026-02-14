@@ -25,6 +25,17 @@ http {
         index index.php;
         try_files $uri $uri/ =404;
 
+        location = /m.js {
+            default_type application/javascript;
+            alias /var/www/html/matomo.js;
+        }
+
+        location = /m.php {
+            include fastcgi_params;
+            fastcgi_param SCRIPT_FILENAME $document_root/matomo.php;
+            fastcgi_pass backend;
+        }
+
         location ~ ^/(index|matomo|piwik|js/index|plugins/HeatmapSessionRecording/configs).php {
             fastcgi_split_path_info ^(.+\.php)(/.+)$;
             try_files $fastcgi_script_name =404;
