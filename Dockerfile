@@ -10,4 +10,6 @@ ADD matomo.template /etc/nginx/matomo.template
 ADD nextcloud.template /etc/nginx/nextcloud.template
 ADD prestashop.template /etc/nginx/prestashop.template
 
+HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 CMD curl -f http://localhost || exit 1
+
 WORKDIR /var/www/html
